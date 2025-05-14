@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 const tasks = [
   { title: "Read a book 📚", time: "7:00-8:00" },
   { title: "Wireframing new product ⬜️", time: "8:00-9:00" },
@@ -11,9 +13,44 @@ const tasks = [
 ];
 
 export default function Page() {
+  const [isOpen, setIsOpen] = useState(true)
+
+  const [count, setCount] = useState(0)
+
+  const [isExceed, setIsExceed] = useState(false) 
+
+  // perform the search function. state of the input text is empty string
+  const [inputText, setInputText] = useState('')
+
+  const [visibleTasks, setVisibleTasks] = useState(tasks)
+
+  const [match, setMatch] = useState(true)
+
+  function handleSearch() {
+    const keyWord = inputText.toLowerCase()
+    const matched = tasks.filter(task => task.title.toLowerCase().includes(keyWord))
+    if (matched.length === 0) {
+      setMatch(false)
+    } else {
+      setMatch(true)
+    }
+    setVisibleTasks(matched)
+    setCountTasks(matched.length)
+  }
+
+  function sortTodo() {
+    const sortedTasks = [...visibleTasks].sort((a, b) => {
+      return a.title.localeCompare(b.title);
+    });
+      setVisibleTasks(sortedTasks)
+  }
+
+  const [countTasks, setCountTasks] = useState(visibleTasks.length)
+
+
   return (
     <div className="bg-gray-100 min-h-screen flex">
-      <aside id="aside" className="w-1/3 bg-white py-5 px-6">
+      <aside className={"w-1/3 bg-white py-5 px-6 " + (isOpen ? '' : 'hidden')}>
         <h1 className="text-xl font-bold">Private</h1>
         <div>
           <ul className="m-2">
@@ -57,9 +94,8 @@ export default function Page() {
       </aside>
 
       <main className="w-2/3 py-3 px-6 relative">
-        <button
-          id="sidebarToggler"
-          className="absolute top-10 -left-4 shadow rounded-full size-8 bg-white"
+        <button onClick={() => setIsOpen(!isOpen)}
+          className={"absolute top-10 shadow rounded-full size-8 bg-white " + (isOpen ? "-left-4" : "-left-1")}
         >
           →
         </button>
@@ -70,35 +106,58 @@ export default function Page() {
           </div>
           <div className="flex gap-2 items-center">
             <div className="flex items-center gap-2 w-28 bg-white py-1.5 px-3 rounded-xl">
-              <button id="sortButton">⬇</button>
+              <button onClick={sortTodo}>⬇</button>
               <p>Sort</p>
             </div>
             <button className="bg-white p-1">🟰</button>
           </div>
         </header>
-        <form>
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          handleSearch()
+        }}>
           <input
-            id="textSearch"
             type="text"
             placeholder="Please add a to-do task"
             className="border border-gray-500 rounded-lg px-2 py-1"
+            onChange={(e) => {
+              const wordCount = e.target.value.length
+              setInputText(e.target.value) // update the const inputText
+              
+              if ( wordCount > 20) {
+                setCount(20) 
+                setIsExceed(true)
+              }
+              else {setCount(wordCount)
+                    setIsExceed(false)}
+            }}
           />
           <button
-            id="search"
             className="border px-2 py-1 bg-slate-900 text-white rounded-lg"
+            onClick={handleSearch}
           >
             Search
           </button>
           <p className="text-slate-600 text-sm">
-            Max <span id="wordCount"></span>/20 characters.
+            Max {count}/20 characters. <span className={"text-red-500  " + (isExceed ? '' : "hidden")}>You have exceeded the word limit!</span>
           </p>
         </form>
         <div>
           <ul id="list">
-            {tasks.map((task) => (
-              <TaskItem key={task.title} title={task.title} time={task.time} />
-            ))}
+            {match ? (
+              <>
+                {visibleTasks.map((task) => (
+                <TaskItem key={task.title} title={task.title} time={task.time} />
+                ))}
+                <li>{countTasks} to-do tasks left!</li>              
+              </>
+
+            ) : (
+              <li className="px-2 py-2">No item found...</li>
+            )
+            }
           </ul>
+
         </div>
       </main>
     </div>
@@ -124,3 +183,5 @@ function TaskItem(props: TaskProps) {
     </li>
   );
 }
+
+
