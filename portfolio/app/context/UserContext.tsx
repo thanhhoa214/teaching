@@ -1,14 +1,13 @@
-'use client'
+"use client";
 // NextJS
 
 import { createContext } from "react";
 
 interface AppInfo {
-    userInfo: {
-        name: string
-        age: number
-    }
+  userInfo: {
+    name: string;
+    age: number;
+  };
 }
 
-export const AppInfoContext = createContext<AppInfo | null>(null)
-
+export const AppInfoContext = createContext<AppInfo | null>(null);

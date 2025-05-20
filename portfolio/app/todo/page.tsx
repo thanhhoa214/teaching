@@ -5,61 +5,65 @@ import { useEffect, useRef, useState } from "react";
 import { TaskList, TodoItem } from "./TaskList";
 import { AppInfoContext } from "../context/UserContext";
 
-
 export default function Page() {
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(true);
 
   // perform the search function. state of the input text is empty string
-  const [inputText, setInputText] = useState('')
+  const [inputText, setInputText] = useState("");
   // const previousSearchRef = useRef<string[]>([])
 
-  const count = inputText.length
-  const isExceed = count > 20
+  const count = inputText.length;
+  const isExceed = count > 20;
 
-  const [visibleTasks, setVisibleTasks] = useState<TodoItem[]>([])
+  const [visibleTasks, setVisibleTasks] = useState<TodoItem[]>([]);
 
-  const todosRef = useRef<TodoItem[]>([])
+  const todosRef = useRef<TodoItem[]>([]);
 
   useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/todos/').then((response) => {
-      return response.json()
-    }).then((todos: TodoItem[]) => {
-      todosRef.current = todos
-      setVisibleTasks(todos)
-    })
-  }, [])
+    fetch("https://jsonplaceholder.typicode.com/todos/")
+      .then((response) => {
+        return response.json();
+      })
+      .then((todos: TodoItem[]) => {
+        todosRef.current = todos;
+        setVisibleTasks(todos);
+      });
+  }, []);
 
   useEffect(() => {
     if (isExceed) {
-      console.log("runs")
-      setTimeout(() => setInputText(''), 2000)
+      console.log("runs");
+      setTimeout(() => setInputText(""), 2000);
     }
-  }, [isExceed])
-
+  }, [isExceed]);
 
   function handleSearch() {
-    const keyWord = inputText.toLowerCase()
+    const keyWord = inputText.toLowerCase();
     // previousSearchRef.current = [...previousSearchRef.current, keyWord]
-    const matched = todosRef.current.filter(task => task.title.toLowerCase().includes(keyWord))
-    setVisibleTasks(matched)
+    const matched = todosRef.current.filter((task) =>
+      task.title.toLowerCase().includes(keyWord)
+    );
+    setVisibleTasks(matched);
   }
 
   function sortTodo() {
     const sortedTasks = [...visibleTasks].sort((a, b) => {
       return a.title.localeCompare(b.title);
     });
-    setVisibleTasks(sortedTasks)
+    setVisibleTasks(sortedTasks);
   }
-
-
 
   return (
     <div className="bg-gray-100 min-h-screen flex">
-      <Link href={'/'}>Home</Link>
-      <AppInfoContext.Provider value={{
-        userInfo: { name: 'rin', age: 26 }
-      }}>
-        <aside className={"w-1/3 bg-white py-5 px-6 " + (isOpen ? '' : 'hidden')}>
+      <Link href={"/"}>Home</Link>
+      <AppInfoContext.Provider
+        value={{
+          userInfo: { name: "rin", age: 26 },
+        }}
+      >
+        <aside
+          className={"w-1/3 bg-white py-5 px-6 " + (isOpen ? "" : "hidden")}
+        >
           <h1 className="text-xl font-bold">Private</h1>
           <div>
             <ul className="m-2">
@@ -102,8 +106,12 @@ export default function Page() {
           </div>
         </aside>
         <main className="w-2/3 py-3 px-6 relative">
-          <button onClick={() => setIsOpen(!isOpen)}
-            className={"absolute top-10 shadow rounded-full size-8 bg-white " + (isOpen ? "-left-4" : "-left-1")}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className={
+              "absolute top-10 shadow rounded-full size-8 bg-white " +
+              (isOpen ? "-left-4" : "-left-1")
+            }
           >
             →
           </button>
@@ -120,33 +128,35 @@ export default function Page() {
               <button className="bg-white p-1">🟰</button>
             </div>
           </header>
-          <form onSubmit={(e) => {
-            e.preventDefault()
-            handleSearch()
-          }}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch();
+            }}
+          >
             <input
               type="text"
               value={inputText}
               placeholder="Please add a to-do task"
               className="border border-gray-500 rounded-lg px-2 py-1"
               onChange={(e) => {
-                setInputText(e.target.value) // update the const inputText
+                setInputText(e.target.value); // update the const inputText
               }}
             />
-            <button
-              className="border px-2 py-1 bg-slate-900 text-white rounded-lg"
-            >
+            <button className="border px-2 py-1 bg-slate-900 text-white rounded-lg">
               Search
             </button>
             <p className="text-slate-600 text-sm">
-              Max {count}/20 characters. <span className={"text-red-500  " + (isExceed ? '' : "hidden")}>You have exceeded the word limit!</span>
+              Max {count}/20 characters.{" "}
+              <span className={"text-red-500  " + (isExceed ? "" : "hidden")}>
+                You have exceeded the word limit!
+              </span>
             </p>
           </form>
           <div>
             <TaskList tasks={visibleTasks} />
           </div>
         </main>
-
       </AppInfoContext.Provider>
     </div>
   );
