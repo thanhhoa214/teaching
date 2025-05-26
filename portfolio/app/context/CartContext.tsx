@@ -1,14 +1,11 @@
-"use client"
+"use client";
 
-import { createContext } from "vm";
+import { createContext } from "react";
 
-interface CartContextType {
-    cartIds: number[];
-    addToCart: (id: number) => void;
-    removeFromCart: (id: number) => void;
+export interface CartContextType {
+  cartItems: { productId: number; quantity: number }[];
+  //   cartInfo: Array<{ id: number; quantity: number }>;
+  addToCart: (productId: number) => void;
 }
 
-export const CartInfoContext = createContext<CartContextType | null>(null);
-
-
-
+export const CartContext = createContext<CartContextType | null>(null);

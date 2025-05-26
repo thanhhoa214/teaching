@@ -1,6 +1,6 @@
 "use client";
 import { useContext, useRef } from "react";
-import { CartInfoContext } from "../context/CartContext";
+import { CartContext } from "../context/CartContext";
 
 export interface ItemProps {
   id: number;
@@ -20,12 +20,12 @@ export default function Deals({ items }: DealProps) {
   const hasItems = items.length !== 0;
 
   const listRef = useRef<HTMLUListElement>(null);
-  const cartInfo = useContext(CartInfoContext);
+  const cartInfo = useContext(CartContext);
 
   return (
     <div className="mt-15">
       <span className="text-red-500 font-bold ml-8 px-4 py-2 border-l-10 text-sm">
-        Today's
+        Today&apos;s
       </span>
       <div className="flex items-center justify-between">
         <div className="ml-8 mt-3">
