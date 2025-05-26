@@ -1,8 +1,8 @@
 "use client";
-import Navbar from "./Navbar";
+import Navbar from "./navbar";
 import CategoryList from "./CategoryList";
 import Deals from "./Deals";
-import Cart from "./Cart";
+import Cart from "./cart";
 import { useState } from "react";
 import { useItems } from "./useItems";
 
