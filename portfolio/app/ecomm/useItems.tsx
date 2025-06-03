@@ -1,36 +1,41 @@
 import { useEffect, useState } from "react";
 import type { ItemProps } from "./Deals";
 
-interface Post {
-  userId: number;
+
+interface DbProduct {
   id: number;
-  title: string;
-  body: string;
+  name: string;
+  price: number;
+  category: string
 }
 
-type PostsResponse = Post[];
+type DbProductResponse = DbProduct[]
+
+
 
 export const useItems = () => {
-  const [posts, setPosts] = useState<PostsResponse>([]);
-  const items: ItemProps[] = posts.map((post) => {
+  const [dbProducts, setdbProducts] = useState<DbProductResponse>([]);
+  const items: ItemProps[] = dbProducts.map((product) => {
+    const discountedPrice = Math.round(product.price * 0.8 * 100)/100; // round item price to 2 decimals
+
     return {
-      id: post.id,
-      item: post.title,
+      id: product.id,
+      item: product.name,
       image: "https://picsum.photos/200",
-      price: post.id * 10,
-      newPrice: post.id * 9,
-      markdown_perc: "10%",
+      price: product.price,
+      newPrice: discountedPrice,
+      markdown_perc: "20%",
       rating: "4/5",
     };
   });
 
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/posts/")
+    fetch("http://localhost:3001/products")
       .then((response) => {
         return response.json();
       })
-      .then((data: Post[]) => {
-        setPosts(data);
+      .then((data: DbProduct[]) => {
+        setdbProducts(data);
       });
   });
 

@@ -1,12 +1,14 @@
 "use client";
 import Navbar from "./navbar";
 import CategoryList from "./CategoryList";
-import Deals from "./Deals";
+import Deals, { DealProps } from "./Deals";
 import Cart from "./cart";
 import { useState } from "react";
 import { useItems } from "./useItems";
 import { CartContext } from "../context/CartContext";
 import { CartContextType } from "../context/CartContext";
+import { DealsContext } from "../context/DealContext";
+
 
 // Data from https://jsonplaceholder.typicode.com/posts -> useState + useEffect + custom hook
 // Cart management -> useContext + useState + custom hook
@@ -20,6 +22,7 @@ export default function Page() {
   );
 
   const [cartItems, setCartItems] = useState<CartContextType["cartItems"]>([]);
+
 
   const cartValue: CartContextType = {
     cartItems,
@@ -69,18 +72,20 @@ export default function Page() {
       </div>
       <div className="flex md:flex-row flex-col-reverse">
         <CartContext.Provider value={cartValue}>
-          <main className="md:w-4/5 md:border-r border-gray-200 border-b">
-            <div>
-              <CategoryList />
-            </div>
+          <DealsContext.Provider value={ {items: filteredItems} }>
+            <main className="md:w-4/5 md:border-r border-gray-200 border-b">
+              <div>
+                <CategoryList />
+              </div>
 
-            <div>
-              <Deals items={filteredItems} />
-            </div>
-          </main>
-          <aside className="md:w-1/5">
-            <Cart />
-          </aside>
+              <div>
+                <Deals items={filteredItems} />
+              </div>
+            </main>
+            <aside className="md:w-1/5">
+              <Cart />
+            </aside>
+          </DealsContext.Provider>
         </CartContext.Provider>
       </div>
     </div>

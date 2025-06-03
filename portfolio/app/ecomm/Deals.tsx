@@ -1,6 +1,7 @@
 "use client";
-import { useContext, useRef } from "react";
+import { useContext, useRef, createContext } from "react";
 import { CartContext } from "../context/CartContext";
+import CountdownTimer from "./CountdownTimer";
 
 export interface ItemProps {
   id: number;
@@ -12,13 +13,14 @@ export interface ItemProps {
   markdown_perc: string;
 }
 
-interface DealProps {
+export interface DealProps {
   items: ItemProps[];
 }
 
+export const DealsContext = createContext<DealProps | null>(null);
+
 export default function Deals({ items }: DealProps) {
   const hasItems = items.length !== 0;
-
   const listRef = useRef<HTMLUListElement>(null);
   const cartInfo = useContext(CartContext);
 
@@ -30,7 +32,7 @@ export default function Deals({ items }: DealProps) {
       <div className="flex items-center justify-between">
         <div className="ml-8 mt-3">
           <span className="font-bold text-3xl mr-9">Flash Sales</span>
-          <span>{new Date().toString()}</span>
+          <CountdownTimer/>
         </div>
         <div>
           <span
